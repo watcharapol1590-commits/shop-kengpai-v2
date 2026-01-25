@@ -121,4 +121,154 @@
 
             // 4. Size
             { id: 33, name: "1.5 X 7.0 (ตำรวจ)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
-            { id: 34, name: "1.5 X 7.5 (ป้ายเล็ก)", price: 0, cat: "size", img: "
+            { id: 34, name: "1.5 X 7.5 (ป้ายเล็ก)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
+            { id: 35, name: "2.0 X 7.5 (ทหาร)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
+            { id: 36, name: "2.5 X 7.5 (ป้ายใหญ่)", price: 20, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
+
+            // 5. Lines
+            { id: 37, name: "1 บรรทัด", price: 0, cat: "lines", count: 1 },
+            { id: 38, name: "2 บรรทัด", price: 0, cat: "lines", count: 2 },
+            { id: 39, name: "3 บรรทัด", price: 0, cat: "lines", count: 3 },
+
+            // 6. Attachment
+            { id: 40, name: "ขาเข็มกลัด", price: 0, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
+            { id: 41, name: "ขาหมุด(กิ๊ฟล๊อค)", price: 0, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
+            { id: 42, name: "แม่เหล็ก", price: 50, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
+
+            // 7. Finish
+            { id: 43, name: "ไม่เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" },
+            { id: 44, name: "เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" }
+        ];
+
+        // ตัวแปรเก็บค่าที่ลูกค้าเลือกปัจจุบัน
+        let selections = { material: 1, logo: 14, font: 26, size: 33, lines: 37, attachment: 40, finish: 43 };
+        let cart = [];
+
+        function renderOptions() {
+            const groups = [
+                { label: "1. เลือกวัสดุป้าย", cat: "material", cols: 2 },
+                { label: "2. เลือกโลโก้", cat: "logo", cols: 3 },
+                { label: "3. เลือกขนาดป้าย", cat: "size", cols: 2 },
+                { label: "4. เลือกฟอนต์", cat: "font", cols: 2 },
+                { label: "5. เลือกขาติดตั้ง", cat: "attachment", cols: 3 },
+                { label: "6. การเคลือบ", cat: "finish", cols: 2 },
+                { label: "7. รูปแบบบรรทัด", cat: "lines", cols: 3 }
+            ];
+
+            const container = document.getElementById('main-content');
+            container.innerHTML = groups.map(group => `
+                <div>
+                    <h2 class="font-bold text-gray-800 mb-4 border-l-4 border-indigo-600 pl-3 text-lg">${group.label}</h2>
+                    <div class="grid grid-cols-${group.cols} gap-3">
+                        ${db.filter(i => i.cat === group.cat).map(item => `
+                            <div onclick="selectItem('${group.cat}', ${item.id})" id="item-${item.id}" 
+                                 class="item-card p-3 bg-white rounded-2xl shadow-sm text-center ${selections[group.cat] == item.id ? 'selected' : ''}">
+                                ${item.img ? `<div class="img-container mb-2"><img src="${getImg(item.img)}"></div>` : ''}
+                                <div class="text-[11px] font-bold leading-tight min-h-[30px] flex items-center justify-center">${item.name}</div>
+                                <div class="text-[11px] text-indigo-600 font-bold mt-1">${item.price > 0 ? '+'+item.price+'.-' : 'ฟรี'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            updateUI();
+        }
+
+        function selectItem(cat, id) {
+            selections[cat] = id;
+            renderOptions();
+        }
+
+        function updateUI() {
+            let total = 0;
+            for(let key in selections) {
+                total += db.find(i => i.id == selections[key]).price;
+            }
+            document.getElementById('currentPrice').innerText = total;
+
+            // จัดการช่องกรอกข้อความ
+            const lineCount = db.find(i => i.id == selections.lines).count;
+            document.getElementById('txt-line2').classList.toggle('hidden', lineCount < 2);
+            document.getElementById('txt-line3').classList.toggle('hidden', lineCount < 3);
+        }
+
+        function addToCart() {
+            const l1 = document.getElementById('txt-line1').value;
+            const l2 = document.getElementById('txt-line2').value;
+            const l3 = document.getElementById('txt-line3').value;
+            if(!l1) return alert("กรุณากรอกชื่อบนป้าย (บรรทัดที่ 1)");
+
+            let fullDesc = "";
+            let totalPrice = 0;
+            for(let key in selections) {
+                const item = db.find(i => i.id == selections[key]);
+                fullDesc += item.name + " / ";
+                totalPrice += item.price;
+            }
+
+            const lineCount = db.find(i => i.id == selections.lines).count;
+            let msg = l1;
+            if(lineCount >= 2) msg += " | " + (l2 || "-");
+            if(lineCount >= 3) msg += " | " + (l3 || "-");
+
+            cart.push({ desc: fullDesc, msg: msg, price: totalPrice });
+            renderCart();
+            
+            // รีเซ็ตช่องกรอก
+            document.getElementById('txt-line1').value = "";
+            document.getElementById('txt-line2').value = "";
+            document.getElementById('txt-line3').value = "";
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cartList');
+            let grand = 0;
+            list.innerHTML = cart.map((item, idx) => {
+                grand += item.price;
+                return `
+                <div class="bg-white p-4 rounded-3xl border border-indigo-100 flex justify-between items-center shadow-sm">
+                    <div class="text-[11px] flex-1 pr-4">
+                        <p class="font-bold text-indigo-700">${item.desc}</p>
+                        <p class="text-gray-900 mt-1 font-bold bg-yellow-100 px-2 inline-block">ข้อความ: ${item.msg}</p>
+                        <p class="font-bold mt-1 text-sm text-indigo-600">${item.price} บาท</p>
+                    </div>
+                    <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-500 font-bold bg-red-50 p-2 rounded-full px-4 text-xs">ลบ</button>
+                </div>`;
+            }).join('');
+            
+            document.getElementById('cartCount').innerText = cart.length;
+            document.getElementById('grandTotal').innerText = grand + " บาท";
+            document.getElementById('checkoutBox').classList.toggle('hidden', cart.length === 0);
+        }
+
+        async function submitOrder() {
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const addr = document.getElementById('custAddr').value;
+            if(!name || !phone || !addr) return alert("กรุณากรอกข้อมูลจัดส่งให้ครบถ้วน");
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
+
+            const payload = {
+                name, phone, address: addr,
+                items: cart.map((i,idx) => `รายการ ${idx+1}: ${i.desc} (ข้อความ: ${i.msg})`).join('\n'),
+                total: document.getElementById('grandTotal').innerText
+            };
+
+            try {
+                const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if(result.status === "success") {
+                    alert("✅ ขอบคุณครับ! บันทึกข้อมูลการสั่งซื้อเรียบร้อยแล้ว");
+                    cart = []; renderCart();
+                }
+            } catch (e) { alert("❌ เกิดข้อผิดพลาดในการส่งข้อมูล"); }
+            finally { btn.disabled = false; btn.innerText = "ยืนยันการสั่งซื้อ"; }
+        }
+
+        // เริ่มต้นทำงาน
+        renderOptions();
+    </script>
+</body>
+</html>
