@@ -3,37 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เก่งป้าย V2 - ปรับแต่งเองได้</title>
+    <title>เก่งป้าย V2 - ระบบสั่งทำป้ายชื่อ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Sarabun', sans-serif; }
-        
-        /* ส่วนควบคุมการแสดงผลรูปภาพพรีวิว */
-        .preview-box { 
-            position: relative; 
-            width: 100%; 
-            max-width: 400px; 
-            margin: auto; 
-            aspect-ratio: 16/6; /* อัตราส่วนแผ่นป้าย */
-        }
-        
-        /* รูปแผ่นป้าย (พื้นหลัง) */
-        #previewImg { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            border-radius: 12px; 
-        }
-
-        /* รูปโลโก้ (ตัวซ้อน) - ปรับตำแหน่งและขนาดตรงนี้ได้เลย */
+        .preview-box { position: relative; width: 100%; max-width: 400px; margin: auto; aspect-ratio: 16/6; }
+        #previewImg { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
         #logoPreview { 
             position: absolute; 
-            top: 20%;     /* ระยะห่างจากด้านบน (ปรับเพิ่ม-ลดได้) */
-            left: 10%;    /* ระยะห่างจากด้านซ้าย (ปรับเพิ่ม-ลดได้) */
-            width: 18%;   /* ขนาดความกว้างของโลโก้ */
+            top: 20%;     /* แก้จุดนี้เพื่อเลื่อนโลโก้ขึ้น-ลง */
+            left: 10%;    /* แก้จุดนี้เพื่อเลื่อนโลโก้ซ้าย-ขวา */
+            width: 18%;   /* แก้จุดนี้เพื่อปรับขนาดโลโก้ */
             height: auto;
-            pointer-events: none; /* ป้องกันการกดโดนรูปโลโก้ */
+            pointer-events: none;
         }
     </style>
 </head>
@@ -48,7 +31,6 @@
             <div class="preview-box bg-gray-100 border-2 border-blue-100 rounded-2xl p-2 shadow-inner">
                 <img id="previewImg" src="https://via.placeholder.com/400x150?text=เลือกวัสดุ" class="shadow-md">
                 <img id="logoPreview" src="" class="hidden"> 
-                
                 <div class="absolute bottom-2 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                     ราคา: <span id="currentPrice">0</span> บาท
                 </div>
@@ -61,12 +43,10 @@
                     <label class="block text-sm font-bold text-gray-700 mb-1">1. เลือกวัสดุป้าย</label>
                     <select id="sel-mat" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-blue-500"></select>
                 </div>
-
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">2. เลือกโลโก้</label>
                     <select id="sel-logo" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl"></select>
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">3. ขนาด</label>
@@ -77,7 +57,133 @@
                         <select id="sel-attach" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl"></select>
                     </div>
                 </div>
-
                 <div class="bg-yellow-50 p-4 rounded-2xl border border-yellow-200 space-y-3">
-                    <label class="block text-xs font-bold text-yellow-800 uppercase">ข้อความที่ต้องการพิมพ์</label>
-                    <input type="
+                    <input type="text" id="line1" placeholder="ชื่อ-นามสกุล" class="w-full p-2 border rounded-lg">
+                    <input type="text" id="line2" placeholder="ตำแหน่ง" class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+            <button onclick="addToCart()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg transform active:scale-95 transition">+ เพิ่มลงตะกร้า</button>
+        </div>
+
+        <div id="cartSection" class="p-5 border-t-8 border-gray-100">
+            <h2 class="text-xl font-bold mb-4">🛒 รายการสั่งซื้อ (<span id="cartCount">0</span>)</h2>
+            <div id="cartList" class="space-y-3"></div>
+            <div id="orderSummary" class="mt-8 hidden">
+                <div class="p-4 bg-gray-50 rounded-2xl mb-6">
+                    <div class="flex justify-between text-2xl font-black text-red-600"><span>ยอดรวมสุทธิ:</span><span id="grandTotal">0 บาท</span></div>
+                </div>
+                <div class="space-y-3 bg-white border-2 border-blue-50 p-4 rounded-2xl shadow-sm">
+                    <input type="text" id="custName" placeholder="ชื่อผู้รับ" class="w-full p-3 border rounded-xl">
+                    <input type="tel" id="custPhone" placeholder="เบอร์โทร" class="w-full p-3 border rounded-xl">
+                    <textarea id="custAddr" placeholder="ที่อยู่จัดส่ง" class="w-full p-3 border rounded-xl" rows="3"></textarea>
+                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-xl">ยืนยันสั่งซื้อสินค้า</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // *** [สำคัญ!] วาง URL ของคุณตรงนี้ ***
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwF07YaoGYtv_-Fl7Hm6RmcKWuhkTu7K7qWc2YcY_s-6mvidJJjtL5tRfXsGxKewMpj/exec"; 
+        
+        const db = [
+            { id: 1, name: "ป้ายอคิลิค", price: 100, cat: "mat", img: "https://drive.google.com/thumbnail?id=1klCw3wrT398UeutTY8B4bZSTJPxv4S3r" },
+            { id: 2, name: "ป้ายไม้มะขาม", price: 120, cat: "mat", img: "https://drive.google.com/thumbnail?id=13UxNtFF-DppQB0Ls7xp7IsRvcKUwsweB" },
+            { id: 16, name: "วปร", price: 30, cat: "logo", img: "https://drive.google.com/thumbnail?id=1iqKnYDCAAQ3dkKPL7RyNkeDfNogmayIv" },
+            { id: 14, name: "ไม่ติดโลโก้", price: 0, cat: "logo", img: "" },
+            { id: 36, name: "2.5 X 7.5 (ใหญ่)", price: 20, cat: "size", img: "" },
+            { id: 42, name: "แม่เหล็ก", price: 50, cat: "attach", img: "" },
+            { id: 40, name: "ขาเข็มกลัด", price: 0, cat: "attach", img: "" }
+        ];
+
+        let cart = [];
+
+        function init() {
+            const cats = ['mat', 'logo', 'size', 'attach'];
+            cats.forEach(c => {
+                const sel = document.getElementById('sel-' + c);
+                db.filter(p => p.cat === c).forEach(p => {
+                    sel.add(new Option(`${p.name} (+${p.price})`, p.id));
+                });
+            });
+            updateUI();
+        }
+
+        function updateUI() {
+            const m = db.find(p => p.id == document.getElementById('sel-mat').value);
+            const l = db.find(p => p.id == document.getElementById('sel-logo').value);
+            const s = db.find(p => p.id == document.getElementById('sel-size').value);
+            const a = db.find(p => p.id == document.getElementById('sel-attach').value);
+            document.getElementById('previewImg').src = m.img || '';
+            const logoPreview = document.getElementById('logoPreview');
+            if(l && l.img) {
+                logoPreview.src = l.img;
+                logoPreview.classList.remove('hidden');
+            } else {
+                logoPreview.classList.add('hidden');
+            }
+            document.getElementById('currentPrice').innerText = m.price + l.price + s.price + a.price;
+        }
+
+        function addToCart() {
+            const m = db.find(p => p.id == document.getElementById('sel-mat').value);
+            const l = db.find(p => p.id == document.getElementById('sel-logo').value);
+            const s = db.find(p => p.id == document.getElementById('sel-size').value);
+            const a = db.find(p => p.id == document.getElementById('sel-attach').value);
+            const line1 = document.getElementById('line1').value;
+            if(!line1) return alert("กรุณาระบุชื่อบนป้าย");
+            cart.push({
+                desc: `${m.name}/${l.name}/${s.name}/${a.name}`,
+                text: `${line1} | ${document.getElementById('line2').value}`,
+                price: (m.price + l.price + s.price + a.price)
+            });
+            renderCart();
+            document.getElementById('line1').value = "";
+            document.getElementById('line2').value = "";
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cartList');
+            list.innerHTML = "";
+            let sub = 0;
+            cart.forEach((i, idx) => {
+                sub += i.price;
+                list.innerHTML += `<div class="bg-white border-2 p-3 rounded-2xl flex justify-between items-center shadow-sm">
+                    <div class="text-xs">
+                        <p class="font-bold text-blue-700">${i.desc}</p>
+                        <p class="text-gray-500 italic">${i.text}</p>
+                        <p class="font-bold mt-1 text-sm">${i.price} บาท</p>
+                    </div>
+                    <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-500 font-bold p-2">ลบ</button>
+                </div>`;
+            });
+            document.getElementById('cartCount').innerText = cart.length;
+            document.getElementById('grandTotal').innerText = (sub + 40) + " บาท";
+            document.getElementById('orderSummary').classList.toggle('hidden', cart.length === 0);
+        }
+
+        async function submitOrder() {
+            const btn = document.getElementById('btnSubmit');
+            const payload = {
+                name: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                address: document.getElementById('custAddr').value,
+                items: cart.map((i, idx) => `[${idx+1}] ${i.desc} / ข้อความ: ${i.text}`).join('\n'),
+                total: document.getElementById('grandTotal').innerText
+            };
+            if(!payload.name || !payload.phone || !payload.address) return alert("กรอกข้อมูลให้ครบครับ");
+            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึก...";
+            try {
+                const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if(result.status === "success") {
+                    alert("✅ สั่งซื้อสำเร็จ!");
+                    cart = []; renderCart();
+                }
+            } catch (e) { alert("❌ Error: ติดต่อ Server ไม่ได้"); }
+            finally { btn.disabled = false; btn.innerText = "ยืนยันสั่งซื้อสินค้า"; }
+        }
+        init();
+    </script>
+</body>
+</html>
