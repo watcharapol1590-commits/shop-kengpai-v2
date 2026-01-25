@@ -3,278 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เก่งป้าย V2 - สั่งทำป้ายชื่อ</title>
+    <title>Kengpai Shop V2 - สั่งทำป้ายชื่อ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
-        .preview-box { position: relative; width: 100%; max-width: 400px; margin: auto; aspect-ratio: 16/6; overflow: hidden; }
-        #previewImg { width: 100%; height: 100%; object-fit: contain; }
-        #logoPreview { position: absolute; top: 18%; left: 8%; width: 18%; height: auto; pointer-events: none; z-index: 10; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
+        .item-card { cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+        .item-card.selected { border-color: #4f46e5; background-color: #eef2ff; }
+        .preview-sticky { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); }
+        .img-container { aspect-ratio: 1/1; overflow: hidden; border-radius: 0.75rem; background: #eee; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
-<body class="bg-slate-100 pb-12">
+<body class="pb-20">
 
-    <div class="max-w-md mx-auto bg-white min-h-screen shadow-2xl overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-700 to-indigo-800 p-6 text-white text-center rounded-b-[40px] shadow-lg">
-            <h1 class="text-2xl font-bold">KENGPAI SHOP V2</h1>
-            <p class="text-blue-100 text-xs mt-1">ออกแบบป้ายชื่อของคุณด้วยตัวเอง</p>
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg">
+        <div class="bg-indigo-700 p-6 text-white text-center rounded-b-[40px] shadow-md">
+            <h1 class="text-2xl font-bold uppercase tracking-widest">Kengpai Shop</h1>
+            <p class="text-indigo-100 text-xs">เลือกแบบที่ต้องการและแจ้งรายละเอียดได้ทันที</p>
         </div>
 
-        <div class="p-4 sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b">
-            <div class="preview-box bg-slate-200 border-2 border-indigo-100 rounded-2xl p-2 shadow-inner">
-                <img id="previewImg" src="https://via.placeholder.com/400x150?text=เลือกวัสดุป้าย" class="rounded-xl">
-                <img id="logoPreview" src="" class="hidden"> 
-                <div class="absolute bottom-2 right-4 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                    <span id="currentPrice">0</span> บาท
-                </div>
-            </div>
+        <div class="preview-sticky p-4 border-b flex justify-between items-center shadow-sm">
+            <div class="text-sm font-bold text-gray-600">ราคารวม: <span id="currentPrice" class="text-2xl text-indigo-600">0</span> บาท</div>
+            <button onclick="addToCart()" class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold shadow-md active:scale-95 transition">+ ลงตะกร้า</button>
         </div>
 
-        <div class="p-5 space-y-4">
-            <div>
-                <label class="text-xs font-bold text-gray-500 mb-1 block">1. วัสดุป้าย (Material)</label>
-                <select id="sel-material" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-indigo-500 outline-none transition-all"></select>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">2. โลโก้ (Logo)</label>
-                    <select id="sel-logo" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-indigo-500 outline-none"></select>
+        <div class="p-4 space-y-8">
+            
+            <div id="main-form" class="space-y-10">
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">3. ฟอนต์ (Font)</label>
-                    <select id="sel-font" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-indigo-500 outline-none"></select>
+
+            <div class="bg-indigo-50 p-5 rounded-3xl border-2 border-indigo-100 space-y-3">
+                <h3 class="text-center font-bold text-indigo-800">ข้อมูลบนป้าย</h3>
+                <div id="input-fields" class="space-y-2">
+                    <input type="text" id="txt-line1" placeholder="บรรทัดที่ 1 (ชื่อ-นามสกุล)" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-300">
+                    <input type="text" id="txt-line2" placeholder="บรรทัดที่ 2 (ตำแหน่ง/ชื่อ ENG)" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-300 hidden">
+                    <input type="text" id="txt-line3" placeholder="บรรทัดที่ 3 (หน่วยงาน)" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-300 hidden">
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">4. ขนาด (Size)</label>
-                    <select id="sel-size" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-indigo-500 outline-none"></select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">5. รูปแบบบรรทัด</label>
-                    <select id="sel-lines" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-indigo-500 outline-none"></select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">6. ขาติดตั้ง (Attach)</label>
-                    <select id="sel-attachment" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-indigo-500 outline-none"></select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-500 mb-1 block">7. การเคลือบ (Finish)</label>
-                    <select id="sel-finish" onchange="updateUI()" class="w-full border-2 p-3 rounded-xl focus:border-indigo-500 outline-none"></select>
-                </div>
-            </div>
-
-            <div id="textInputContainer" class="bg-indigo-50 p-4 rounded-2xl border-2 border-indigo-100 space-y-3">
-                <p class="text-xs font-bold text-indigo-600 text-center uppercase tracking-wider">ระบุข้อความบนป้าย</p>
-                <input type="text" id="txt-line1" placeholder="ชื่อ-นามสกุล" class="w-full p-3 border rounded-xl focus:ring-2 ring-indigo-300 outline-none">
-                <input type="text" id="txt-line2" placeholder="ตำแหน่ง / ชื่อภาษาอังกฤษ" class="w-full p-3 border rounded-xl hidden">
-                <input type="text" id="txt-line3" placeholder="หน่วยงาน / ข้อมูลอื่นๆ" class="w-full p-3 border rounded-xl hidden">
-            </div>
-
-            <button onclick="addToCart()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform">+ เพิ่มลงตะกร้า</button>
         </div>
 
-        <div id="cartArea" class="p-5 border-t-8 border-slate-100">
-            <h2 class="text-xl font-bold mb-4 flex justify-between items-center">
-                🛒 รายการที่เลือก <span id="cartCount" class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">0</span>
-            </h2>
+        <div id="cartArea" class="p-5 bg-slate-50 border-t-4 border-slate-200">
+            <h2 class="text-xl font-bold mb-4">🛒 ตะกร้าสินค้า (<span id="cartCount">0</span>)</h2>
             <div id="cartList" class="space-y-3"></div>
             
             <div id="checkoutBox" class="mt-8 hidden space-y-4">
-                <div class="p-4 bg-slate-900 text-white rounded-2xl flex justify-between items-center">
-                    <span class="text-lg">ยอดสุทธิ:</span>
-                    <span id="grandTotal" class="text-2xl font-bold text-yellow-400">0 บาท</span>
-                </div>
-                <div class="bg-white border-2 p-4 rounded-2xl space-y-2">
-                    <input type="text" id="custName" placeholder="ชื่อผู้รับ" class="w-full p-3 border rounded-lg">
-                    <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-3 border rounded-lg">
-                    <textarea id="custAddr" placeholder="ที่อยู่จัดส่งโดยละเอียด" class="w-full p-3 border rounded-lg" rows="3"></textarea>
-                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg">ยืนยันการสั่งซื้อ</button>
+                <div class="bg-white border-2 p-5 rounded-3xl space-y-3 shadow-sm">
+                    <p class="font-bold text-lg text-center">ข้อมูลจัดส่ง</p>
+                    <input type="text" id="custName" placeholder="ชื่อผู้รับ" class="w-full p-3 border rounded-xl">
+                    <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-3 border rounded-xl">
+                    <textarea id="custAddr" placeholder="ที่อยู่จัดส่งโดยละเอียด" class="w-full p-3 border rounded-xl" rows="3"></textarea>
+                    <div class="p-4 bg-indigo-900 text-white rounded-2xl flex justify-between font-bold">
+                        <span>ยอดชำระทั้งสิ้น:</span><span id="grandTotal">0 บาท</span>
+                    </div>
+                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold text-xl shadow-lg">ยืนยันการสั่งซื้อ</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // *** ใส่ URL ของ Apps Script คุณที่นี่ ***
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwF07YaoGYtv_-Fl7Hm6RmcKWuhkTu7K7qWc2YcY_s-6mvidJJjtL5tRfXsGxKewMpj/exec";
 
+        // ฟังก์ชันช่วยจัดการลิงก์รูป
+        const getThumb = (url) => {
+            if(!url) return "https://via.placeholder.com/150?text=No+Image";
+            const id = url.match(/[-\w]{25,}/);
+            return id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=w400` : url;
+        }
+
         const db = [
-            // Materials
-            { id: 1, name: "ป้ายอคิลิค", price: 100, cat: "material", img: "https://drive.google.com/thumbnail?id=1klCw3wrT398UeutTY8B4bZSTJPxv4S3r" },
-            { id: 2, name: "ป้ายไม้มะขาม", price: 120, cat: "material", img: "https://drive.google.com/thumbnail?id=13UxNtFF-DppQB0Ls7xp7IsRvcKUwsweB" },
-            { id: 3, name: "ป้ายพลาสติก", price: 100, cat: "material", img: "https://drive.google.com/thumbnail?id=1RgwekNK5w-ECkxMVg0E9SmaQCEPGhphj" },
-            { id: 4, name: "ป้ายอักษรนูนชุปเงินมีขอบ", price: 150, cat: "material", img: "https://drive.google.com/thumbnail?id=1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI" },
-            { id: 5, name: "ป้ายอักษรนูนชุปเงินไม่มีขอบ", price: 150, cat: "material", img: "https://drive.google.com/thumbnail?id=1cSiErvvO-RDqSiKDtMtFQB2zXFmpf9S1" },
-            { id: 6, name: "ป้ายอักษรนูนชุปทองมีขอบ", price: 180, cat: "material", img: "https://drive.google.com/thumbnail?id=1Pu-_p0c4ZAMNlVj1wPrbeI4TO98yImhZ" },
-            { id: 7, name: "ป้ายอักษรนูนชุปทองไม่มีขอบ", price: 180, cat: "material", img: "https://drive.google.com/thumbnail?id=1t2XBGzAEBhK6kTqMr5yaqHdFDh5ZrHdj" },
-            { id: 8, name: "ป้ายพื้นเงาชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/thumbnail?id=1sfMoGiwG2ZVyc1WbvaGHfjkCAG3BBqBi" },
-            { id: 9, name: "ป้ายพื้นเงาชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/thumbnail?id=1Z7OxlZAD9HHp4dQ7rOVC80HqeaekXzl6" },
-            { id: 10, name: "ป้ายพื้นทรายชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/thumbnail?id=1ue5jxh_gdR_PLXhT-1JOahRRYkIpotod" },
-            { id: 11, name: "ป้ายพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/thumbnail?id=11p-TC8S77w64fa00IE-sLWx3Ws08O-4g" },
-            { id: 12, name: "ป้ายขอบเงาพื้นทรายชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/thumbnail?id=1v2e6gmJFC4qbaTEWSo6U1GO_ym2F4QNj" },
-            { id: 13, name: "ป้ายขอบเงาพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/thumbnail?id=1UYaeVGg8J6P5p5xsG8k-Gsz41VKpH22J" },
-            // Logos
+            { id: 1, name: "ป้ายอคิลิค", price: 100, cat: "material", img: "https://drive.google.com/file/d/1klCw3wrT398UeutTY8B4bZSTJPxv4S3r/view" },
+            { id: 2, name: "ป้ายไม้มะขาม", price: 120, cat: "material", img: "https://drive.google.com/file/d/13UxNtFF-DppQB0Ls7xp7IsRvcKUwsweB/view" },
+            { id: 3, name: "ป้ายพลาสติก", price: 100, cat: "material", img: "https://drive.google.com/file/d/1RgwekNK5w-ECkxMVg0E9SmaQCEPGhphj/view" },
+            { id: 4, name: "ป้ายอักษรนูนชุปเงินมีขอบ", price: 150, cat: "material", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" },
+            { id: 5, name: "ป้ายอักษรนูนชุปเงินไม่มีขอบ", price: 150, cat: "material", img: "https://drive.google.com/file/d/1cSiErvvO-RDqSiKDtMtFQB2zXFmpf9S1/view" },
+            { id: 6, name: "ป้ายอักษรนูนชุปทองมีขอบ", price: 180, cat: "material", img: "https://drive.google.com/file/d/1Pu-_p0c4ZAMNlVj1wPrbeI4TO98yImhZ/view" },
+            { id: 7, name: "ป้ายอักษรนูนชุปทองไม่มีขอบ", price: 180, cat: "material", img: "https://drive.google.com/file/d/1t2XBGzAEBhK6kTqMr5yaqHdFDh5ZrHdj/view" },
+            { id: 8, name: "ป้ายพื้นเงาชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/file/d/1sfMoGiwG2ZVyc1WbvaGHfjkCAG3BBqBi/view" },
+            { id: 9, name: "ป้ายพื้นเงาชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/1Z7OxlZAD9HHp4dQ7rOVC80HqeaekXzl6/view" },
+            { id: 10, name: "ป้ายพื้นทรายชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/file/d/1ue5jxh_gdR_PLXhT-1JOahRRYkIpotod/view" },
+            { id: 11, name: "ป้ายพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/11p-TC8S77w64fa00IE-sLWx3Ws08O-4g/view" },
+            { id: 12, name: "ป้ายขอบเงาพื้นทรายชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/file/d/1v2e6gmJFC4qbaTEWSo6U1GO_ym2F4QNj/view" },
+            { id: 13, name: "ป้ายขอบเงาพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/1UYaeVGg8J6P5p5xsG8k-Gsz41VKpH22J/view" },
             { id: 14, name: "ไม่ติดโลโก้", price: 0, cat: "logo", img: "" },
-            { id: 15, name: "ป้ายทหาร", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=1Q870c5Vc2A1WNoImBQaMgcg5o7Qmt_96" },
-            { id: 16, name: "วปร", price: 30, cat: "logo", img: "https://drive.google.com/thumbnail?id=1iqKnYDCAAQ3dkKPL7RyNkeDfNogmayIv" },
-            { id: 17, name: "ตำรวจ", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI" },
-            { id: 18, name: "เสมา", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=1EddGi7R6MCmq-_VSwGPLgOwtCXh3PdNA" },
-            { id: 19, name: "ครูเอกชน", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=1G57dabHH9HaBt73Cn4XANppKmY-HADni" },
-            { id: 20, name: "สิงห์วงกลม", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=19_1Jx5gWiOqKY1mS8Rcd9vXxbY1lsHlV" },
-            { id: 21, name: "สาธารณสุข", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=1qiEV8gRij9RqD1z97yrPFIxupD1euy_9" },
-            { id: 22, name: "เกษตร", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=1sYdIbf4F1wfhiFgTiEJCprie2YCu_i1L" },
-            { id: 23, name: "การไฟฟ้าส่วนภูมิภาค", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=191RoYWjjIrNtUcdyH7PpaHvSFwVRS9Vw" },
-            { id: 24, name: "กทม", price: 0, cat: "logo", img: "https://drive.google.com/thumbnail?id=1Tu4WVAY--acmYVpUsbPBKN0mbV775QiI" },
-            { id: 25, name: "โลโก้อื่นๆ(แจ้งรูป)", price: 0, cat: "logo", img: "" },
-            // Fonts
-            { id: 26, name: "สารบรรณ", price: 0, cat: "font", img: "https://drive.google.com/thumbnail?id=17WVoz3H4KJpoJhcVGLBLaz_tqhuhunvc" },
-            { id: 27, name: "อาลักษณ์", price: 0, cat: "font", img: "https://drive.google.com/thumbnail?id=1EuC8TStvoeN6NgDMmujlqwOy3ytgcUcF" },
-            { id: 28, name: "วรรณรี", price: 0, cat: "font", img: "https://drive.google.com/thumbnail?id=1Z7hUNDYxvRckkxD8vTPCnnTYncTTJzNP" },
-            { id: 29, name: "เอกชัย", price: 0, cat: "font", img: "https://drive.google.com/thumbnail?id=1iqk4t2dAnrn1ipeJde4f8W-db-5_78Uc" },
-            { id: 30, name: "วันสิกา", price: 0, cat: "font", img: "https://drive.google.com/thumbnail?id=1ObmsAY1cnc1Wx22qe_qJ5VYEPLNDYxvd" },
-            { id: 31, name: "ศักศิษย์", price: 0, cat: "font", img: "https://drive.google.com/thumbnail?id=1mXbO_H9XLOiDFsfBJgCPlbYLHw1NC8O_" },
-            { id: 32, name: "อื่นๆ(แจ้ง)", price: 0, cat: "font", img: "" },
-            // Sizes
-            { id: 33, name: "1.5 X 7.0 (ตำรวจ)", price: 0, cat: "size", img: "https://drive.google.com/thumbnail?id=1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7" },
-            { id: 34, name: "1.5 X 7.5 (ป้ายเล็ก)", price: 0, cat: "size", img: "https://drive.google.com/thumbnail?id=1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7" },
-            { id: 35, name: "2.0 X 7.5 (ทหาร)", price: 0, cat: "size", img: "https://drive.google.com/thumbnail?id=1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7" },
-            { id: 36, name: "2.5 X 7.5 (ป้ายใหญ่)", price: 20, cat: "size", img: "https://drive.google.com/thumbnail?id=1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7" },
-            // Lines
-            { id: 37, name: "1 บรรทัด", price: 0, cat: "lines", count: 1 },
-            { id: 38, name: "2 บรรทัด", price: 0, cat: "lines", count: 2 },
-            { id: 39, name: "3 บรรทัด", price: 0, cat: "lines", count: 3 },
-            // Attachment
-            { id: 40, name: "ขาเข็มกลัด", price: 0, cat: "attachment", img: "https://drive.google.com/thumbnail?id=1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV" },
-            { id: 41, name: "ขาหมุด(กิ๊ฟล๊อค)", price: 0, cat: "attachment", img: "https://drive.google.com/thumbnail?id=1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV" },
-            { id: 42, name: "แม่เหล็ก", price: 50, cat: "attachment", img: "https://drive.google.com/thumbnail?id=1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV" },
-            // Finish
-            { id: 43, name: "ไม่เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/thumbnail?id=1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI" },
-            { id: 44, name: "เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/thumbnail?id=1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI" }
-        ];
-
-        let cart = [];
-
-        function init() {
-            const categories = ['material', 'logo', 'font', 'size', 'lines', 'attachment', 'finish'];
-            categories.forEach(cat => {
-                const sel = document.getElementById('sel-' + cat);
-                db.filter(i => i.cat === cat).forEach(i => sel.add(new Option(`${i.name} (+${i.price})`, i.id)));
-            });
-            updateUI();
-        }
-
-        function updateUI() {
-            const getVal = (id) => db.find(i => i.id == document.getElementById('sel-'+id).value);
-            const mat = getVal('material');
-            const logo = getVal('logo');
-            const lines = getVal('lines');
-
-            // Preview logic
-            document.getElementById('previewImg').src = mat.img || 'https://via.placeholder.com/400x150?text=KENGPAI';
-            const lp = document.getElementById('logoPreview');
-            if(logo.img) { lp.src = logo.img; lp.classList.remove('hidden'); } else { lp.classList.add('hidden'); }
-
-            // Price logic
-            const total = ['material', 'logo', 'font', 'size', 'lines', 'attachment', 'finish']
-                        .reduce((sum, id) => sum + getVal(id).price, 0);
-            document.getElementById('currentPrice').innerText = total;
-
-            // Line visibility logic
-            document.getElementById('txt-line2').classList.toggle('hidden', lines.count < 2);
-            document.getElementById('txt-line3').classList.toggle('hidden', lines.count < 3);
-        }
-
-        function addToCart() {
-            const getVal = (id) => db.find(i => i.id == document.getElementById('sel-'+id).value);
-            const line1 = document.getElementById('txt-line1').value;
-            const line2 = document.getElementById('txt-line2').value;
-            const line3 = document.getElementById('txt-line3').value;
-            const lineCount = getVal('lines').count;
-
-            if(!line1) return alert("กรุณากรอกชื่อ-นามสกุล");
-
-            let textInfo = line1;
-            if(lineCount >= 2) textInfo += ` | ${line2 || '-(ไม่มี)-'}`;
-            if(lineCount >= 3) textInfo += ` | ${line3 || '-(ไม่มี)-'}`;
-
-            const price = ['material', 'logo', 'font', 'size', 'lines', 'attachment', 'finish']
-                        .reduce((sum, id) => sum + getVal(id).price, 0);
-
-            cart.push({
-                desc: `${getVal('material').name} + ${getVal('logo').name} (${getVal('size').name})`,
-                details: `ฟอนต์: ${getVal('font').name}, ขา: ${getVal('attachment').name}, ${getVal('finish').name}`,
-                text: textInfo,
-                price: price
-            });
-
-            renderCart();
-            document.getElementById('txt-line1').value = "";
-            document.getElementById('txt-line2').value = "";
-            document.getElementById('txt-line3').value = "";
-        }
-
-        function renderCart() {
-            const list = document.getElementById('cartList');
-            list.innerHTML = "";
-            let subtotal = 0;
-            cart.forEach((item, idx) => {
-                subtotal += item.price;
-                list.innerHTML += `
-                    <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl flex justify-between items-start">
-                        <div class="text-xs">
-                            <p class="font-bold text-indigo-700 text-sm">${item.desc}</p>
-                            <p class="text-gray-500">${item.details}</p>
-                            <p class="text-gray-800 mt-1 font-bold">ข้อความ: ${item.text}</p>
-                            <p class="text-indigo-600 font-bold mt-1">${item.price} บาท</p>
-                        </div>
-                        <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-500 font-bold text-xs uppercase">ลบ</button>
-                    </div>`;
-            });
-            document.getElementById('cartCount').innerText = cart.length;
-            document.getElementById('grandTotal').innerText = subtotal + " บาท";
-            document.getElementById('checkoutBox').classList.toggle('hidden', cart.length === 0);
-        }
-
-        async function submitOrder() {
-            const btn = document.getElementById('btnSubmit');
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            const addr = document.getElementById('custAddr').value;
-
-            if(!name || !phone || !addr) return alert("กรุณากรอกข้อมูลผู้รับให้ครบถ้วน");
-
-            const itemsStr = cart.map((i, idx) => 
-                `ชิ้นที่ ${idx+1}: ${i.desc} / ข้อความ: ${i.text} (${i.price}บ.)`
-            ).join("\n");
-
-            const payload = {
-                name: name,
-                phone: phone,
-                address: addr,
-                items: itemsStr,
-                total: document.getElementById('grandTotal').innerText
-            };
-
-            btn.disabled = true; btn.innerText = "กำลังส่งข้อมูล...";
-            try {
-                const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-                const result = await res.json();
-                if(result.status === "success") {
-                    alert("✅ สั่งซื้อสำเร็จ! เราจะรีบดำเนินการให้โดยเร็วที่สุด");
-                    cart = []; renderCart();
-                }
-            } catch (e) { alert("❌ เกิดข้อผิดพลาดในการส่งข้อมูล"); }
-            finally { btn.disabled = false; btn.innerText = "ยืนยันการสั่งซื้อ"; }
-        }
-
-        init();
-    </script>
-</body>
-</html>
+            { id: 15, name: "ป้ายทหาร", price: 0, cat: "logo", img: "
