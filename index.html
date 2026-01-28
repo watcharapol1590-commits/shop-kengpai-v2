@@ -18,10 +18,10 @@
 </head>
 <body class="pb-20">
 
-    <div class="max-w-md mx-auto bg-white min-h-screen shadow-2xl">
+    <div id="app-container" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl">
         <div class="bg-indigo-700 p-6 text-white text-center rounded-b-[40px] shadow-lg">
             <h1 class="text-2xl font-bold uppercase tracking-widest">KENGPAI V2</h1>
-            <p class="text-indigo-100 text-xs">ออกแบบป้ายชื่อตามระเบียบ พร้อมระบบคำนวณราคา</p>
+            <p class="text-indigo-100 text-xs">เลือกแบบที่ต้องการและระบุข้อความได้ทันที</p>
         </div>
 
         <div class="sticky-summary p-4 border-b flex justify-between items-center shadow-sm">
@@ -40,7 +40,7 @@
                 <h3 class="text-white text-center font-bold">ระบุรายละเอียดบนป้าย</h3>
                 <div id="input-container" class="space-y-3">
                     <input type="text" id="txt-line1" placeholder="บรรทัดที่ 1 (ชื่อ-นามสกุล)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg">
-                    <input type="text" id="txt-line2" placeholder="บรรทัดที่ 2 (ตำแหน่ง/ชื่อภาษาอังกฤษ)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg hidden">
+                    <input type="text" id="txt-line2" placeholder="บรรทัดที่ 2 (ตำแหน่ง)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg hidden">
                     <input type="text" id="txt-line3" placeholder="บรรทัดที่ 3 (หน่วยงาน/อื่นๆ)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg hidden">
                 </div>
             </div>
@@ -48,33 +48,22 @@
 
         <div id="cartArea" class="p-6 bg-slate-50 border-t-8 border-slate-100">
             <h2 class="text-xl font-bold mb-4 flex justify-between">🛒 ตะกร้าสินค้า <span id="cartCount" class="bg-indigo-600 text-white text-xs px-2 py-1 rounded-full">0</span></h2>
-            
-            <div id="cartList" class="space-y-3">
-                </div>
+            <div id="cartList" class="space-y-3"></div>
             
             <div id="checkoutBox" class="mt-8 hidden space-y-4">
                 <div class="bg-white border-2 p-6 rounded-[32px] shadow-sm space-y-4">
-                    <p class="font-bold text-lg border-b pb-2">ข้อมูลจัดส่ง</p>
-                    <input type="text" id="custName" placeholder="ชื่อ-นามสกุล ผู้รับ" class="w-full p-3 border rounded-xl">
+                    <p class="font-bold text-lg border-b pb-2">ที่อยู่จัดส่ง</p>
+                    <input type="text" id="custName" placeholder="ชื่อ-นามสกุล" class="w-full p-3 border rounded-xl">
                     <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-3 border rounded-xl">
-                    <textarea id="custAddr" placeholder="ที่อยู่จัดส่งโดยละเอียด" class="w-full p-3 border rounded-xl" rows="3"></textarea>
+                    <textarea id="custAddr" placeholder="ที่อยู่โดยละเอียด" class="w-full p-3 border rounded-xl" rows="3"></textarea>
                     
-                    <div class="p-4 bg-indigo-900 text-white rounded-2xl space-y-2">
-                        <div class="flex justify-between text-sm opacity-80">
-                            <span>ยอดรวมสินค้า:</span>
-                            <span id="subTotalText">0 บาท</span>
-                        </div>
-                        <div class="flex justify-between text-sm text-yellow-400 font-bold">
-                            <span>ค่าจัดส่ง:</span>
-                            <span>+ 40 บาท</span>
-                        </div>
-                        <div class="flex justify-between text-xl font-bold border-t border-indigo-700 pt-2 mt-2">
-                            <span>ยอดสุทธิ:</span>
-                            <span id="grandTotal" class="text-white">0 บาท</span>
-                        </div>
+                    <div class="p-4 bg-indigo-50 rounded-2xl space-y-2">
+                        <div class="flex justify-between text-sm"><span>ยอดสินค้า:</span> <span id="subTotalDisplay">0 บาท</span></div>
+                        <div class="flex justify-between text-sm text-green-600 font-bold"><span>ค่าจัดส่ง:</span> <span>+ 40 บาท</span></div>
+                        <div class="flex justify-between text-xl font-bold border-t pt-2"><span>รวมสุทธิ:</span> <span id="grandTotalDisplay" class="text-indigo-700">0 บาท</span></div>
                     </div>
                     
-                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg hover:bg-green-700 transition">ยืนยันการสั่งซื้อ</button>
+                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg">ยืนยันการสั่งซื้อ</button>
                 </div>
             </div>
         </div>
@@ -84,12 +73,13 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwF07YaoGYtv_-Fl7Hm6RmcKWuhkTu7K7qWc2YcY_s-6mvidJJjtL5tRfXsGxKewMpj/exec";
 
         const getImg = (url) => {
-            if(!url) return "https://via.placeholder.com/150?text=No+Image";
+            if(!url) return "https://via.placeholder.com/150?text=Kengpai";
             const id = url.match(/[-\w]{25,}/);
-            return id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=w400` : url;
+            return id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=400` : url;
         }
 
         const db = [
+            // 1. Material
             { id: 1, name: "ป้ายอคิลิค", price: 100, cat: "material", img: "https://drive.google.com/file/d/1klCw3wrT398UeutTY8B4bZSTJPxv4S3r/view" },
             { id: 2, name: "ป้ายไม้มะขาม", price: 120, cat: "material", img: "https://drive.google.com/file/d/13UxNtFF-DppQB0Ls7xp7IsRvcKUwsweB/view" },
             { id: 3, name: "ป้ายพลาสติก", price: 100, cat: "material", img: "https://drive.google.com/file/d/1RgwekNK5w-ECkxMVg0E9SmaQCEPGhphj/view" },
@@ -103,6 +93,8 @@
             { id: 11, name: "ป้ายพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/11p-TC8S77w64fa00IE-sLWx3Ws08O-4g/view" },
             { id: 12, name: "ป้ายขอบเงาพื้นทรายชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/file/d/1v2e6gmJFC4qbaTEWSo6U1GO_ym2F4QNj/view" },
             { id: 13, name: "ป้ายขอบเงาพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/1UYaeVGg8J6P5p5xsG8k-Gsz41VKpH22J/view" },
+
+            // 2. Logo
             { id: 14, name: "ไม่ติดโลโก้", price: 0, cat: "logo", img: "" },
             { id: 15, name: "ป้ายทหาร", price: 0, cat: "logo", img: "https://drive.google.com/file/d/1Q870c5Vc2A1WNoImBQaMgcg5o7Qmt_96/view" },
             { id: 16, name: "วปร", price: 30, cat: "logo", img: "https://drive.google.com/file/d/1iqKnYDCAAQ3dkKPL7RyNkeDfNogmayIv/view" },
@@ -115,6 +107,8 @@
             { id: 23, name: "การไฟฟ้าส่วนภูมิภาค", price: 0, cat: "logo", img: "https://drive.google.com/file/d/191RoYWjjIrNtUcdyH7PpaHvSFwVRS9Vw/view" },
             { id: 24, name: "กทม", price: 0, cat: "logo", img: "https://drive.google.com/file/d/1Tu4WVAY--acmYVpUsbPBKN0mbV775QiI/view" },
             { id: 25, name: "อื่นๆ(แจ้งรูป)", price: 0, cat: "logo", img: "" },
+
+            // 3. Font
             { id: 26, name: "ฟอนต์สารบรรณ", price: 0, cat: "font", img: "https://drive.google.com/file/d/17WVoz3H4KJpoJhcVGLBLaz_tqhuhunvc/view" },
             { id: 27, name: "ฟอนต์อาลักษณ์", price: 0, cat: "font", img: "https://drive.google.com/file/d/1EuC8TStvoeN6NgDMmujlqwOy3ytgcUcF/view" },
             { id: 28, name: "ฟอนต์วรรณรี", price: 0, cat: "font", img: "https://drive.google.com/file/d/1Z7hUNDYxvRckkxD8vTPCnnTYncTTJzNP/view" },
@@ -122,16 +116,24 @@
             { id: 30, name: "ฟอนต์วันสิกา", price: 0, cat: "font", img: "https://drive.google.com/file/d/1ObmsAY1cnc1Wx22qe_qJ5VYEPLNDYxvd/view" },
             { id: 31, name: "ฟอนต์ศักศิษย์", price: 0, cat: "font", img: "https://drive.google.com/file/d/1mXbO_H9XLOiDFsfBJgCPlbYLHw1NC8O_/view" },
             { id: 32, name: "ฟอนต์อื่นๆ", price: 0, cat: "font", img: "" },
+
+            // 4. Size
             { id: 33, name: "1.5 X 7.0 (ตำรวจ)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
             { id: 34, name: "1.5 X 7.5 (ป้ายเล็ก)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
-            { id: 35, name: "2.0 X 7.5 (ขนาดมาตรฐาน/ทหาร)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
+            { id: 35, name: "2.0 X 7.5 (ทหาร)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
             { id: 36, name: "2.5 X 7.5 (ป้ายใหญ่)", price: 20, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
+
+            // 5. Lines
             { id: 37, name: "1 บรรทัด", price: 0, cat: "lines", count: 1 },
             { id: 38, name: "2 บรรทัด", price: 0, cat: "lines", count: 2 },
             { id: 39, name: "3 บรรทัด", price: 0, cat: "lines", count: 3 },
+
+            // 6. Attachment
             { id: 40, name: "ขาเข็มกลัด", price: 0, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
             { id: 41, name: "ขาหมุด(กิ๊ฟล๊อค)", price: 0, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
             { id: 42, name: "แม่เหล็ก", price: 50, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
+
+            // 7. Finish
             { id: 43, name: "ไม่เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" },
             { id: 44, name: "เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" }
         ];
@@ -149,18 +151,16 @@
                 { label: "6. การเคลือบ", cat: "finish", cols: 2 },
                 { label: "7. รูปแบบบรรทัด", cat: "lines", cols: 3 }
             ];
-
             const container = document.getElementById('main-content');
-            container.innerHTML = groups.map(group => `
+            container.innerHTML = groups.map(g => `
                 <div>
-                    <h2 class="font-bold text-gray-800 mb-4 border-l-4 border-indigo-600 pl-3 text-lg">${group.label}</h2>
-                    <div class="grid grid-cols-${group.cols} gap-3">
-                        ${db.filter(i => i.cat === group.cat).map(item => `
-                            <div onclick="selectItem('${group.cat}', ${item.id})" id="item-${item.id}" 
-                                 class="item-card p-3 bg-white rounded-2xl shadow-sm text-center ${selections[group.cat] == item.id ? 'selected' : ''}">
+                    <h2 class="font-bold text-gray-800 mb-4 border-l-4 border-indigo-600 pl-3">${g.label}</h2>
+                    <div class="grid grid-cols-${g.cols} gap-3">
+                        ${db.filter(i => i.cat === g.cat).map(item => `
+                            <div onclick="selectItem('${g.cat}', ${item.id})" class="item-card p-3 bg-white rounded-2xl shadow-sm text-center ${selections[g.cat] == item.id ? 'selected' : ''}">
                                 ${item.img ? `<div class="img-container mb-2"><img src="${getImg(item.img)}"></div>` : ''}
-                                <div class="text-[11px] font-bold leading-tight min-h-[30px] flex items-center justify-center">${item.name}</div>
-                                <div class="text-[11px] text-indigo-600 font-bold mt-1">${item.price > 0 ? '+'+item.price+'.-' : 'ฟรี'}</div>
+                                <div class="text-[10px] font-bold leading-tight">${item.name}</div>
+                                <div class="text-[10px] text-indigo-600 font-bold mt-1">${item.price > 0 ? '+'+item.price+'.-' : 'ฟรี'}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -169,16 +169,12 @@
             updateUI();
         }
 
-        function selectItem(cat, id) {
-            selections[cat] = id;
-            renderOptions();
-        }
+        function selectItem(cat, id) { selections[cat] = id; renderOptions(); }
 
         function updateUI() {
             let total = 0;
             for(let key in selections) total += db.find(i => i.id == selections[key]).price;
             document.getElementById('currentPrice').innerText = total;
-
             const lineCount = db.find(i => i.id == selections.lines).count;
             document.getElementById('txt-line2').classList.toggle('hidden', lineCount < 2);
             document.getElementById('txt-line3').classList.toggle('hidden', lineCount < 3);
@@ -188,20 +184,18 @@
             const l1 = document.getElementById('txt-line1').value;
             const l2 = document.getElementById('txt-line2').value;
             const l3 = document.getElementById('txt-line3').value;
-            if(!l1) return alert("กรุณากรอกชื่อบนป้าย");
+            if(!l1) return alert("กรุณากรอกข้อความบนป้าย");
 
-            let fullDesc = "";
-            let price = 0;
-            for(let key in selections) {
-                const item = db.find(i => i.id == selections[key]);
-                fullDesc += item.name + " / ";
+            let desc = ""; let price = 0;
+            for(let k in selections) {
+                const item = db.find(i => i.id == selections[k]);
+                desc += item.name + " / ";
                 price += item.price;
             }
-
             const lineCount = db.find(i => i.id == selections.lines).count;
             let msg = l1 + (lineCount >= 2 ? " | "+(l2||"-") : "") + (lineCount >= 3 ? " | "+(l3||"-") : "");
 
-            cart.push({ desc: fullDesc, msg: msg, price: price });
+            cart.push({ desc, msg, price });
             renderCart();
             document.getElementById('txt-line1').value = "";
             document.getElementById('txt-line2').value = "";
@@ -210,32 +204,23 @@
 
         function renderCart() {
             const list = document.getElementById('cartList');
-            const shipping = 40;
             let sub = 0;
-
             if(cart.length === 0) {
                 list.innerHTML = `<p class="text-center text-gray-400 py-4 text-sm">ยังไม่มีสินค้าในตะกร้า</p>`;
                 document.getElementById('checkoutBox').classList.add('hidden');
                 document.getElementById('cartCount').innerText = "0";
                 return;
             }
-
             list.innerHTML = cart.map((item, idx) => {
                 sub += item.price;
-                return `
-                <div class="bg-white p-4 rounded-3xl border border-indigo-100 flex justify-between items-center shadow-sm">
-                    <div class="text-[11px] flex-1 pr-4">
-                        <p class="font-bold text-indigo-700">${item.desc}</p>
-                        <p class="text-gray-900 mt-1 font-bold">ข้อความ: ${item.msg}</p>
-                        <p class="font-bold mt-1 text-indigo-600">${item.price} บาท</p>
-                    </div>
-                    <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-500 font-bold bg-red-50 px-4 py-2 rounded-full text-xs">ลบ</button>
+                return `<div class="bg-white p-3 rounded-2xl border flex justify-between items-center text-[11px] shadow-sm">
+                    <div class="flex-1"><b>${item.desc}</b><br><span class="text-indigo-600 font-bold">ข้อความ: ${item.msg}</span></div>
+                    <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-500 font-bold px-3">ลบ</button>
                 </div>`;
             }).join('');
-            
             document.getElementById('cartCount').innerText = cart.length;
-            document.getElementById('subTotalText').innerText = sub + " บาท";
-            document.getElementById('grandTotal').innerText = (sub + shipping) + " บาท";
+            document.getElementById('subTotalDisplay').innerText = sub + " บาท";
+            document.getElementById('grandTotalDisplay').innerText = (sub + 40) + " บาท";
             document.getElementById('checkoutBox').classList.remove('hidden');
         }
 
@@ -243,27 +228,44 @@
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
-            if(!name || !phone || !addr) return alert("กรอกข้อมูลจัดส่งให้ครบถ้วน");
+            if(!name || !phone || !addr) return alert("กรุณากรอกข้อมูลจัดส่งให้ครบถ้วน");
 
             const btn = document.getElementById('btnSubmit');
-            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึก...";
+            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
 
             const payload = {
                 name, phone, address: addr,
-                items: cart.map((i,idx) => `[${idx+1}] ${i.desc} (ข้อความ: ${i.msg})`).join('\n'),
-                shipping: "40 บาท",
-                total: document.getElementById('grandTotal').innerText
+                items: cart.map((i,idx) => `รายการที่ ${idx+1}: ${i.desc} (ข้อความ: ${i.msg})`).join('\n\n'),
+                total: document.getElementById('grandTotalDisplay').innerText
             };
 
             try {
                 const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await res.json();
                 if(result.status === "success") {
-                    alert("✅ บันทึกคำสั่งซื้อเรียบร้อยแล้ว!");
-                    cart = []; renderCart();
+                    showSuccess(name, payload.items, payload.total);
                 }
-            } catch (e) { alert("❌ เกิดข้อผิดพลาด"); }
-            finally { btn.disabled = false; btn.innerText = "ยืนยันการสั่งซื้อ"; }
+            } catch (e) { alert("เกิดข้อผิดพลาดในการส่งข้อมูล"); btn.disabled = false; btn.innerText = "ยืนยันการสั่งซื้อ"; }
+        }
+
+        function showSuccess(name, items, total) {
+            document.getElementById('app-container').innerHTML = `
+                <div class="p-8 text-center space-y-6">
+                    <div class="text-6xl">🎉</div>
+                    <h2 class="text-2xl font-bold text-indigo-700">สั่งซื้อสำเร็จ!</h2>
+                    <p class="text-gray-600 text-sm">คุณ <b>${name}</b> แอดมินได้รับข้อมูลแล้ว<br>จะรีบดำเนินการให้ทันทีครับ</p>
+                    
+                    <div class="bg-slate-50 p-4 rounded-3xl text-left text-xs space-y-2 border">
+                        <p class="font-bold border-b pb-1 text-gray-400">สรุปรายการสั่งซื้อ</p>
+                        <div style="white-space: pre-line;">${items}</div>
+                        <p class="border-t pt-2 font-bold text-indigo-700 text-lg">ยอดรวม: ${total}</p>
+                    </div>
+
+                    <button onclick="location.reload()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg">กลับไปหน้าแรก</button>
+                    <p class="text-[10px] text-gray-400">Kengpai Shop V2</p>
+                </div>
+            `;
+            window.scrollTo(0,0);
         }
 
         renderOptions();
