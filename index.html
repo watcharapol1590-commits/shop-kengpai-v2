@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kengpai Shop V2 - สั่งทำป้ายชื่อ</title>
+    <title>Kengpai Shop V2 - ระบบสั่งทำป้ายชื่ออัจฉริยะ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
         .item-card { cursor: pointer; border: 2px solid transparent; transition: all 0.2s; position: relative; }
         .item-card.selected { border-color: #4f46e5; background-color: #eef2ff; transform: scale(1.02); }
         .item-card.selected::after { content: '✓'; position: absolute; top: 2px; right: 5px; background: #4f46e5; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; }
@@ -19,58 +19,62 @@
 <body class="pb-20">
 
     <div id="app-container" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl">
-        <div class="bg-indigo-700 p-6 text-white text-center rounded-b-[40px] shadow-lg">
-            <h1 class="text-2xl font-bold uppercase tracking-widest">KENGPAI V2</h1>
-            <p class="text-indigo-100 text-xs">เลือกแบบที่ต้องการและระบุข้อความได้ทันที</p>
+        <div class="bg-indigo-700 p-8 text-white text-center rounded-b-[40px] shadow-lg">
+            <h1 class="text-3xl font-bold uppercase tracking-widest">KENGPAI V2</h1>
+            <p class="text-indigo-100 text-sm mt-1">Professional Nameplate System</p>
         </div>
 
         <div class="sticky-summary p-4 border-b flex justify-between items-center shadow-sm">
             <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase">ราคาแผ่นนี้</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">ราคาแผ่นปัจจุบัน</p>
                 <p class="text-2xl font-bold text-indigo-600"><span id="currentPrice">0</span> บาท</p>
             </div>
-            <button onclick="addToCart()" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg active:scale-95 transition">+ เพิ่มลงตะกร้า</button>
+            <button onclick="addToCart()" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg active:scale-95 transition hover:bg-indigo-700">+ เพิ่มลงตะกร้า</button>
         </div>
 
-        <div class="p-4 space-y-10" id="main-content">
-            </div>
+        <div class="p-4 space-y-10" id="main-content"></div>
 
         <div class="p-4">
-            <div id="textSection" class="bg-slate-900 p-6 rounded-[32px] space-y-4 shadow-xl">
-                <h3 class="text-white text-center font-bold">ระบุรายละเอียดบนป้าย</h3>
+            <div id="textSection" class="bg-slate-900 p-6 rounded-[32px] space-y-4 shadow-xl border-4 border-indigo-500/30">
+                <h3 class="text-white text-center font-bold text-lg">ระบุรายละเอียดบนป้าย</h3>
                 <div id="input-container" class="space-y-3">
-                    <input type="text" id="txt-line1" placeholder="บรรทัดที่ 1 (ชื่อ-นามสกุล)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center">
-                    <input type="text" id="txt-line2" placeholder="บรรทัดที่ 2 (ตำแหน่ง)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center hidden">
-                    <input type="text" id="txt-line3" placeholder="บรรทัดที่ 3 (หน่วยงาน/อื่นๆ)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center hidden">
+                    <input type="text" id="txt-line1" placeholder="บรรทัดที่ 1 (ชื่อ-นามสกุล)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center font-bold">
+                    <input type="text" id="txt-line2" placeholder="บรรทัดที่ 2 (ตำแหน่ง)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center font-bold hidden">
+                    <input type="text" id="txt-line3" placeholder="บรรทัดที่ 3 (หน่วยงาน/อื่นๆ)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center font-bold hidden">
                 </div>
             </div>
         </div>
 
         <div id="cartArea" class="p-6 bg-slate-50 border-t-8 border-slate-100">
-            <h2 class="text-xl font-bold mb-4 flex justify-between">🛒 ตะกร้าสินค้า <span id="cartCount" class="bg-indigo-600 text-white text-xs px-2 py-1 rounded-full">0</span></h2>
+            <h2 class="text-xl font-bold mb-4 flex justify-between items-center">
+                <span>🛒 รายการที่เลือก</span>
+                <span id="cartCount" class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full">0</span>
+            </h2>
             <div id="cartList" class="space-y-3"></div>
             
             <div id="checkoutBox" class="mt-8 hidden space-y-4">
-                <div class="bg-white border-2 p-6 rounded-[32px] shadow-sm space-y-4">
-                    <p class="font-bold text-lg border-b pb-2">ที่อยู่จัดส่ง</p>
-                    <input type="text" id="custName" placeholder="ชื่อ-นามสกุล" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-500">
-                    <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-500">
-                    <textarea id="custAddr" placeholder="ที่อยู่โดยละเอียด" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-500" rows="3"></textarea>
+                <div class="bg-white border-2 border-indigo-100 p-6 rounded-[32px] shadow-md space-y-4">
+                    <p class="font-bold text-lg border-b pb-2 text-indigo-800">ข้อมูลจัดส่งและยืนยัน</p>
+                    <input type="text" id="custName" placeholder="ชื่อ-นามสกุล ผู้รับ" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
+                    <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
+                    <textarea id="custAddr" placeholder="ที่อยู่จัดส่งโดยละเอียด" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 ring-indigo-500" rows="3"></textarea>
                     
-                    <div class="p-4 bg-indigo-50 rounded-2xl space-y-2">
-                        <div class="flex justify-between text-sm"><span>ยอดสินค้า:</span> <span id="subTotalDisplay">0 บาท</span></div>
+                    <div class="p-5 bg-indigo-50 rounded-[24px] space-y-2 border border-indigo-100">
+                        <div class="flex justify-between text-sm text-gray-600"><span>รวมยอดสินค้า:</span> <span id="subTotalDisplay">0 บาท</span></div>
                         <div class="flex justify-between text-sm text-green-600 font-bold"><span>ค่าจัดส่ง:</span> <span>+ 40 บาท</span></div>
-                        <div class="flex justify-between text-xl font-bold border-t pt-2"><span>รวมสุทธิ:</span> <span id="grandTotalDisplay" class="text-indigo-700">0 บาท</span></div>
+                        <div class="flex justify-between text-2xl font-bold border-t border-indigo-200 pt-2 mt-2">
+                            <span>รวมสุทธิ:</span> 
+                            <span id="grandTotalDisplay" class="text-indigo-700">0 บาท</span>
+                        </div>
                     </div>
                     
-                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg active:scale-95 transition">ยืนยันการสั่งซื้อ</button>
+                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-xl shadow-xl active:scale-95 transition hover:bg-green-700">ยืนยันคำสั่งซื้อ</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // เปลี่ยนเป็น URL ของ Google Apps Script ของคุณ
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwF07YaoGYtv_-Fl7Hm6RmcKWuhkTu7K7qWc2YcY_s-6mvidJJjtL5tRfXsGxKewMpj/exec";
 
         const getImg = (url) => {
@@ -80,22 +84,19 @@
         }
 
         const db = [
-            // 1. Material
             { id: 1, name: "ป้ายอคิลิค", price: 100, cat: "material", img: "https://drive.google.com/file/d/1klCw3wrT398UeutTY8B4bZSTJPxv4S3r/view" },
             { id: 2, name: "ป้ายไม้มะขาม", price: 120, cat: "material", img: "https://drive.google.com/file/d/13UxNtFF-DppQB0Ls7xp7IsRvcKUwsweB/view" },
             { id: 3, name: "ป้ายพลาสติก", price: 100, cat: "material", img: "https://drive.google.com/file/d/1RgwekNK5w-ECkxMVg0E9SmaQCEPGhphj/view" },
             { id: 4, name: "ป้ายอักษรนูนชุปเงินมีขอบ", price: 150, cat: "material", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" },
             { id: 5, name: "ป้ายอักษรนูนชุปเงินไม่มีขอบ", price: 150, cat: "material", img: "https://drive.google.com/file/d/1cSiErvvO-RDqSiKDtMtFQB2zXFmpf9S1/view" },
-            { id: 6, name: "ป้ายอักษรนูนชุปทองมีขอบ", price: 180, cat: "material", img: "https://drive.google.com/file/d/1Pu-_p0c4ZAMNlVj1wPrbeI4TO98yImhZ/view" },
-            { id: 7, name: "ป้ายอักษรนูนชุปทองไม่มีขอบ", price: 180, cat: "material", img: "https://drive.google.com/file/d/1t2XBGzAEBhK6kTqMr5yaqHdFDh5ZrHdj/view" },
+            { id: 6, name: "ป้ายอักษรนูนชุปทองมีขอบ", price: 200, cat: "material", img: "https://drive.google.com/file/d/1Pu-_p0c4ZAMNlVj1wPrbeI4TO98yImhZ/view" },
+            { id: 7, name: "ป้ายอักษรนูนชุปทองไม่มีขอบ", price: 200, cat: "material", img: "https://drive.google.com/file/d/1t2XBGzAEBhK6kTqMr5yaqHdFDh5ZrHdj/view" },
             { id: 8, name: "ป้ายพื้นเงาชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/file/d/1sfMoGiwG2ZVyc1WbvaGHfjkCAG3BBqBi/view" },
             { id: 9, name: "ป้ายพื้นเงาชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/1Z7OxlZAD9HHp4dQ7rOVC80HqeaekXzl6/view" },
             { id: 10, name: "ป้ายพื้นทรายชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/file/d/1ue5jxh_gdR_PLXhT-1JOahRRYkIpotod/view" },
             { id: 11, name: "ป้ายพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/11p-TC8S77w64fa00IE-sLWx3Ws08O-4g/view" },
             { id: 12, name: "ป้ายขอบเงาพื้นทรายชุปเงิน", price: 180, cat: "material", img: "https://drive.google.com/file/d/1v2e6gmJFC4qbaTEWSo6U1GO_ym2F4QNj/view" },
             { id: 13, name: "ป้ายขอบเงาพื้นทรายชุปทอง", price: 200, cat: "material", img: "https://drive.google.com/file/d/1UYaeVGg8J6P5p5xsG8k-Gsz41VKpH22J/view" },
-
-            // 2. Logo
             { id: 14, name: "ไม่ติดโลโก้", price: 0, cat: "logo", img: "" },
             { id: 15, name: "ป้ายทหาร", price: 0, cat: "logo", img: "https://drive.google.com/file/d/1Q870c5Vc2A1WNoImBQaMgcg5o7Qmt_96/view" },
             { id: 16, name: "วปร", price: 30, cat: "logo", img: "https://drive.google.com/file/d/1iqKnYDCAAQ3dkKPL7RyNkeDfNogmayIv/view" },
@@ -108,8 +109,6 @@
             { id: 23, name: "การไฟฟ้าส่วนภูมิภาค", price: 0, cat: "logo", img: "https://drive.google.com/file/d/191RoYWjjIrNtUcdyH7PpaHvSFwVRS9Vw/view" },
             { id: 24, name: "กทม", price: 0, cat: "logo", img: "https://drive.google.com/file/d/1Tu4WVAY--acmYVpUsbPBKN0mbV775QiI/view" },
             { id: 25, name: "อื่นๆ(แจ้งรูป)", price: 0, cat: "logo", img: "" },
-
-            // 3. Font
             { id: 26, name: "ฟอนต์สารบรรณ", price: 0, cat: "font", img: "https://drive.google.com/file/d/17WVoz3H4KJpoJhcVGLBLaz_tqhuhunvc/view" },
             { id: 27, name: "ฟอนต์อาลักษณ์", price: 0, cat: "font", img: "https://drive.google.com/file/d/1EuC8TStvoeN6NgDMmujlqwOy3ytgcUcF/view" },
             { id: 28, name: "ฟอนต์วรรณรี", price: 0, cat: "font", img: "https://drive.google.com/file/d/1Z7hUNDYxvRckkxD8vTPCnnTYncTTJzNP/view" },
@@ -117,24 +116,16 @@
             { id: 30, name: "ฟอนต์วันสิกา", price: 0, cat: "font", img: "https://drive.google.com/file/d/1ObmsAY1cnc1Wx22qe_qJ5VYEPLNDYxvd/view" },
             { id: 31, name: "ฟอนต์ศักศิษย์", price: 0, cat: "font", img: "https://drive.google.com/file/d/1mXbO_H9XLOiDFsfBJgCPlbYLHw1NC8O_/view" },
             { id: 32, name: "ฟอนต์อื่นๆ", price: 0, cat: "font", img: "" },
-
-            // 4. Size
             { id: 33, name: "1.5 X 7.0 (ตำรวจ)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
             { id: 34, name: "1.5 X 7.5 (ป้ายเล็ก)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
-            { id: 35, name: "2.0 X 7.5 (ขนาดมาตรฐาน/ป้ายทหาร)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
+            { id: 35, name: "2.0 X 7.5 (ขนาดมาตรฐาน/ทหาร)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
             { id: 36, name: "2.5 X 7.5 (ป้ายใหญ่)", price: 20, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
-
-            // 5. Lines
             { id: 37, name: "1 บรรทัด", price: 0, cat: "lines", count: 1 },
             { id: 38, name: "2 บรรทัด", price: 0, cat: "lines", count: 2 },
             { id: 39, name: "3 บรรทัด", price: 0, cat: "lines", count: 3 },
-
-            // 6. Attachment
             { id: 40, name: "ขาเข็มกลัด", price: 0, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
             { id: 41, name: "ขาหมุด(กิ๊ฟล๊อค)", price: 0, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
             { id: 42, name: "แม่เหล็ก", price: 50, cat: "attachment", img: "https://drive.google.com/file/d/1sjBKC_qs07JndLRE20OMKZl5j-wWgWBV/view" },
-
-            // 7. Finish
             { id: 43, name: "ไม่เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" },
             { id: 44, name: "เคลือบเรซิ่น", price: 0, cat: "finish", img: "https://drive.google.com/file/d/1mLGLdA4BZaB5kuG3rGgHQJSJy60s9HJI/view" }
         ];
@@ -155,12 +146,12 @@
             const container = document.getElementById('main-content');
             container.innerHTML = groups.map(g => `
                 <div>
-                    <h2 class="font-bold text-gray-800 mb-4 border-l-4 border-indigo-600 pl-3">${g.label}</h2>
+                    <h2 class="font-bold text-gray-800 mb-4 border-l-4 border-indigo-600 pl-3 uppercase tracking-wide text-sm">${g.label}</h2>
                     <div class="grid grid-cols-${g.cols} gap-3">
                         ${db.filter(i => i.cat === g.cat).map(item => `
                             <div onclick="selectItem('${g.cat}', ${item.id})" class="item-card p-3 bg-white rounded-2xl shadow-sm text-center ${selections[g.cat] == item.id ? 'selected' : ''}">
                                 ${item.img ? `<div class="img-container mb-2"><img src="${getImg(item.img)}"></div>` : ''}
-                                <div class="text-[10px] font-bold leading-tight">${item.name}</div>
+                                <div class="text-[10px] font-bold leading-tight h-8 flex items-center justify-center">${item.name}</div>
                                 <div class="text-[10px] text-indigo-600 font-bold mt-1">${item.price > 0 ? '+'+item.price+'.-' : 'ฟรี'}</div>
                             </div>
                         `).join('')}
@@ -185,7 +176,7 @@
             const l1 = document.getElementById('txt-line1').value;
             const l2 = document.getElementById('txt-line2').value;
             const l3 = document.getElementById('txt-line3').value;
-            if(!l1) return alert("กรุณากรอกข้อความบนป้าย");
+            if(!l1) return alert("❌ กรุณากรอกข้อความบนป้าย");
 
             let desc = ""; let price = 0;
             for(let k in selections) {
@@ -193,38 +184,36 @@
                 desc += item.name + " / ";
                 price += item.price;
             }
-            // ตัดเครื่องหมาย / ตัวสุดท้ายออก
             desc = desc.replace(/ \/ $/, "");
-
             const lineCount = db.find(i => i.id == selections.lines).count;
             let msg = l1 + (lineCount >= 2 ? " | "+(l2||"-") : "") + (lineCount >= 3 ? " | "+(l3||"-") : "");
 
             cart.push({ desc, msg, price });
             renderCart();
-            // Reset fields
             document.getElementById('txt-line1').value = "";
             document.getElementById('txt-line2').value = "";
             document.getElementById('txt-line3').value = "";
+            alert("✅ เพิ่มลงตะกร้าแล้ว");
         }
 
         function renderCart() {
             const list = document.getElementById('cartList');
             let sub = 0;
             if(cart.length === 0) {
-                list.innerHTML = `<p class="text-center text-gray-400 py-4 text-sm">ยังไม่มีสินค้าในตะกร้า</p>`;
+                list.innerHTML = `<p class="text-center text-gray-400 py-8 text-sm italic">ยังไม่มีสินค้าในตะกร้า</p>`;
                 document.getElementById('checkoutBox').classList.add('hidden');
                 document.getElementById('cartCount').innerText = "0";
                 return;
             }
             list.innerHTML = cart.map((item, idx) => {
                 sub += item.price;
-                return `<div class="bg-white p-3 rounded-2xl border flex justify-between items-center text-[11px] shadow-sm">
-                    <div class="flex-1">
-                        <b>${item.desc}</b><br>
-                        <span class="text-indigo-600 font-bold">ข้อความ: ${item.msg}</span><br>
-                        <span class="text-gray-400 text-[9px]">ราคา: ${item.price} บาท</span>
+                return `<div class="bg-white p-4 rounded-2xl border border-indigo-50 flex justify-between items-start text-[11px] shadow-sm relative">
+                    <div class="flex-1 pr-4">
+                        <b class="text-indigo-900 block mb-1">${item.desc}</b>
+                        <span class="text-indigo-600 font-bold block bg-indigo-50 p-1 rounded">ข้อความ: ${item.msg}</span>
+                        <span class="text-gray-400 text-[10px] mt-1 block font-bold">ราคา: ${item.price} บาท</span>
                     </div>
-                    <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-500 font-bold px-3">ลบ</button>
+                    <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-400 font-bold p-1 hover:text-red-600">ลบ</button>
                 </div>`;
             }).join('');
             document.getElementById('cartCount').innerText = cart.length;
@@ -237,66 +226,89 @@
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
-            if(!name || !phone || !addr) return alert("กรุณากรอกข้อมูลจัดส่งให้ครบถ้วน");
+            
+            if(!name || !phone || !addr) return alert("❌ กรุณากรอกข้อมูลจัดส่งให้ครบถ้วน");
 
             const btn = document.getElementById('btnSubmit');
             btn.disabled = true; 
-            btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
+            btn.innerText = "⏳ กำลังบันทึกออเดอร์...";
 
-            // สรุปรายการแบบละเอียดเพื่อให้ใน Sheet แสดงราคาแต่ละชิ้น
+            // 1. จัดรูปแบบรายการสินค้าแต่ละชิ้น (แยกราคาต่อหน่วย)
             const itemDetails = cart.map((i, idx) => {
-                return `[${idx + 1}] ${i.desc} \nข้อความ: ${i.msg} \nราคา: ${i.price} บาท`;
-            }).join('\n------------------\n');
+                return `📍 ป้ายที่ ${idx + 1}\nสเปก: ${i.desc}\nข้อความ: ${i.msg}\nราคา: ${i.price} บาท`;
+            }).join('\n--------------------------\n');
 
-            const totalAmount = document.getElementById('grandTotalDisplay').innerText;
+            const subTotal = cart.reduce((sum, item) => sum + item.price, 0);
+            const shipping = 40;
+            const grandTotal = subTotal + shipping;
+
+            // 2. จัดเรียงข้อความสรุปชุดใหญ่สำหรับ Google Sheets
+            const finalFullSummary = `
+[ ข้อมูลผู้ซื้อ ]
+ชื่อ: ${name}
+โทร: ${phone}
+ที่อยู่: ${addr}
+
+[ รายการสั่งซื้อ ]
+${itemDetails}
+
+--------------------------
+ยอดรวมสินค้า: ${subTotal} บาท
+ค่าจัดส่ง: ${shipping} บาท
+💰 ยอดสุทธิรวม: ${grandTotal} บาท
+            `.trim();
 
             const payload = {
                 name: name,
                 phone: phone,
                 address: addr,
-                items: itemDetails, // ข้อมูลแยกเป็นชิ้นพร้อมราคาแต่ละชิ้น
-                total: totalAmount  // ยอดรวมสุดท้าย
+                items: finalFullSummary, 
+                total: grandTotal + " บาท"
             };
 
             try {
                 const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await res.json();
                 if(result.status === "success") {
-                    showSuccess(name, itemDetails, totalAmount);
+                    showSuccess(name, itemDetails, subTotal, shipping, grandTotal);
                 } else {
                     throw new Error("Server Error");
                 }
             } catch (e) { 
-                alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่"); 
+                alert("❌ เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง"); 
                 btn.disabled = false; 
-                btn.innerText = "ยืนยันการสั่งซื้อ"; 
+                btn.innerText = "ยืนยันคำสั่งซื้อ"; 
             }
         }
 
-        function showSuccess(name, items, total) {
+        function showSuccess(name, items, sub, ship, total) {
             document.getElementById('app-container').innerHTML = `
                 <div class="p-8 text-center space-y-6">
-                    <div class="text-6xl animate-bounce">✅</div>
-                    <h2 class="text-2xl font-bold text-indigo-700">สั่งซื้อสำเร็จ!</h2>
-                    <p class="text-gray-600 text-sm">คุณ <b>${name}</b> แอดมินได้รับข้อมูลแล้ว<br>จะรีบดำเนินการให้ทันทีครับ</p>
+                    <div class="text-7xl animate-bounce">🎉</div>
+                    <h2 class="text-3xl font-bold text-indigo-700">สั่งซื้อสำเร็จ!</h2>
+                    <p class="text-gray-600 text-sm italic">แอดมินได้รับข้อมูลแล้ว จะรีบดำเนินการทันทีครับ</p>
                     
-                    <div class="bg-slate-50 p-5 rounded-3xl text-left text-xs space-y-3 border border-dashed border-indigo-200">
-                        <p class="font-bold border-b pb-1 text-indigo-400">สรุปรายการสั่งซื้อ</p>
-                        <div style="white-space: pre-line;" class="text-gray-700 font-medium">${items}</div>
-                        <div class="border-t pt-2 flex justify-between items-center font-bold text-indigo-700 text-lg">
-                            <span>ยอดรวมสุทธิ:</span>
-                            <span>${total}</span>
+                    <div class="bg-white p-6 rounded-[32px] text-left text-xs space-y-4 shadow-inner border-2 border-dashed border-indigo-200">
+                        <p class="font-bold border-b pb-2 text-indigo-500 text-sm">สรุปรายการคำสั่งซื้อ</p>
+                        <div style="white-space: pre-line;" class="text-gray-800 leading-relaxed font-medium">${items}</div>
+                        
+                        <div class="border-t border-indigo-100 pt-3 space-y-1">
+                            <div class="flex justify-between"><span>ราคาสินค้า:</span> <span>${sub} บาท</span></div>
+                            <div class="flex justify-between text-green-600"><span>ค่าจัดส่ง:</span> <span>+ ${ship} บาท</span></div>
+                            <div class="flex justify-between font-bold text-indigo-700 text-xl pt-2">
+                                <span>ยอดรวมสุทธิ:</span>
+                                <span>${total} บาท</span>
+                            </div>
                         </div>
                     </div>
 
-                    <button onclick="location.reload()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-indigo-700 transition">กลับไปหน้าแรก</button>
-                    <p class="text-[10px] text-gray-400">Kengpai Shop V2 • ขอบคุณที่ใช้บริการ</p>
+                    <button onclick="location.reload()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-bold shadow-xl hover:bg-indigo-700 transition">กลับไปหน้าแรก</button>
+                    <p class="text-[10px] text-gray-400">Kengpai Shop V2 • ขอบคุณที่เลือกเรา</p>
                 </div>
             `;
             window.scrollTo(0,0);
         }
 
-        // Initial render
         renderOptions();
     </script>
 </body>
