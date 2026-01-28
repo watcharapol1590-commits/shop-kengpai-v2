@@ -39,9 +39,9 @@
             <div id="textSection" class="bg-slate-900 p-6 rounded-[32px] space-y-4 shadow-xl">
                 <h3 class="text-white text-center font-bold">ระบุรายละเอียดบนป้าย</h3>
                 <div id="input-container" class="space-y-3">
-                    <input type="text" id="txt-line1" placeholder="บรรทัดที่ 1 (ชื่อ-นามสกุล)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg">
-                    <input type="text" id="txt-line2" placeholder="บรรทัดที่ 2 (ตำแหน่ง)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg hidden">
-                    <input type="text" id="txt-line3" placeholder="บรรทัดที่ 3 (หน่วยงาน/อื่นๆ)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg hidden">
+                    <input type="text" id="txt-line1" placeholder="บรรทัดที่ 1 (ชื่อ-นามสกุล)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center">
+                    <input type="text" id="txt-line2" placeholder="บรรทัดที่ 2 (ตำแหน่ง)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center hidden">
+                    <input type="text" id="txt-line3" placeholder="บรรทัดที่ 3 (หน่วยงาน/อื่นๆ)" class="w-full p-4 rounded-2xl border-none focus:ring-4 ring-indigo-500 outline-none text-lg text-center hidden">
                 </div>
             </div>
         </div>
@@ -53,9 +53,9 @@
             <div id="checkoutBox" class="mt-8 hidden space-y-4">
                 <div class="bg-white border-2 p-6 rounded-[32px] shadow-sm space-y-4">
                     <p class="font-bold text-lg border-b pb-2">ที่อยู่จัดส่ง</p>
-                    <input type="text" id="custName" placeholder="ชื่อ-นามสกุล" class="w-full p-3 border rounded-xl">
-                    <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-3 border rounded-xl">
-                    <textarea id="custAddr" placeholder="ที่อยู่โดยละเอียด" class="w-full p-3 border rounded-xl" rows="3"></textarea>
+                    <input type="text" id="custName" placeholder="ชื่อ-นามสกุล" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-500">
+                    <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-500">
+                    <textarea id="custAddr" placeholder="ที่อยู่โดยละเอียด" class="w-full p-3 border rounded-xl outline-none focus:ring-2 ring-indigo-500" rows="3"></textarea>
                     
                     <div class="p-4 bg-indigo-50 rounded-2xl space-y-2">
                         <div class="flex justify-between text-sm"><span>ยอดสินค้า:</span> <span id="subTotalDisplay">0 บาท</span></div>
@@ -63,13 +63,14 @@
                         <div class="flex justify-between text-xl font-bold border-t pt-2"><span>รวมสุทธิ:</span> <span id="grandTotalDisplay" class="text-indigo-700">0 บาท</span></div>
                     </div>
                     
-                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg">ยืนยันการสั่งซื้อ</button>
+                    <button onclick="submitOrder()" id="btnSubmit" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg active:scale-95 transition">ยืนยันการสั่งซื้อ</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // เปลี่ยนเป็น URL ของ Google Apps Script ของคุณ
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwF07YaoGYtv_-Fl7Hm6RmcKWuhkTu7K7qWc2YcY_s-6mvidJJjtL5tRfXsGxKewMpj/exec";
 
         const getImg = (url) => {
@@ -120,7 +121,7 @@
             // 4. Size
             { id: 33, name: "1.5 X 7.0 (ตำรวจ)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
             { id: 34, name: "1.5 X 7.5 (ป้ายเล็ก)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
-            { id: 35, name: "2.0 X 7.5 (ขนาดมาตรฐานหรือป้ายทหาร)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
+            { id: 35, name: "2.0 X 7.5 (ขนาดมาตรฐาน/ป้ายทหาร)", price: 0, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
             { id: 36, name: "2.5 X 7.5 (ป้ายใหญ่)", price: 20, cat: "size", img: "https://drive.google.com/file/d/1kL-zKRn_AcDtwXCXF7kCeacsdBEIyyL7/view" },
 
             // 5. Lines
@@ -192,11 +193,15 @@
                 desc += item.name + " / ";
                 price += item.price;
             }
+            // ตัดเครื่องหมาย / ตัวสุดท้ายออก
+            desc = desc.replace(/ \/ $/, "");
+
             const lineCount = db.find(i => i.id == selections.lines).count;
             let msg = l1 + (lineCount >= 2 ? " | "+(l2||"-") : "") + (lineCount >= 3 ? " | "+(l3||"-") : "");
 
             cart.push({ desc, msg, price });
             renderCart();
+            // Reset fields
             document.getElementById('txt-line1').value = "";
             document.getElementById('txt-line2').value = "";
             document.getElementById('txt-line3').value = "";
@@ -214,7 +219,11 @@
             list.innerHTML = cart.map((item, idx) => {
                 sub += item.price;
                 return `<div class="bg-white p-3 rounded-2xl border flex justify-between items-center text-[11px] shadow-sm">
-                    <div class="flex-1"><b>${item.desc}</b><br><span class="text-indigo-600 font-bold">ข้อความ: ${item.msg}</span></div>
+                    <div class="flex-1">
+                        <b>${item.desc}</b><br>
+                        <span class="text-indigo-600 font-bold">ข้อความ: ${item.msg}</span><br>
+                        <span class="text-gray-400 text-[9px]">ราคา: ${item.price} บาท</span>
+                    </div>
                     <button onclick="cart.splice(${idx},1);renderCart()" class="text-red-500 font-bold px-3">ลบ</button>
                 </div>`;
             }).join('');
@@ -231,43 +240,63 @@
             if(!name || !phone || !addr) return alert("กรุณากรอกข้อมูลจัดส่งให้ครบถ้วน");
 
             const btn = document.getElementById('btnSubmit');
-            btn.disabled = true; btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
+            btn.disabled = true; 
+            btn.innerText = "⏳ กำลังบันทึกข้อมูล...";
+
+            // สรุปรายการแบบละเอียดเพื่อให้ใน Sheet แสดงราคาแต่ละชิ้น
+            const itemDetails = cart.map((i, idx) => {
+                return `[${idx + 1}] ${i.desc} \nข้อความ: ${i.msg} \nราคา: ${i.price} บาท`;
+            }).join('\n------------------\n');
+
+            const totalAmount = document.getElementById('grandTotalDisplay').innerText;
 
             const payload = {
-                name, phone, address: addr,
-                items: cart.map((i,idx) => `รายการที่ ${idx+1}: ${i.desc} (ข้อความ: ${i.msg})`).join('\n\n'),
-                total: document.getElementById('grandTotalDisplay').innerText
+                name: name,
+                phone: phone,
+                address: addr,
+                items: itemDetails, // ข้อมูลแยกเป็นชิ้นพร้อมราคาแต่ละชิ้น
+                total: totalAmount  // ยอดรวมสุดท้าย
             };
 
             try {
                 const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await res.json();
                 if(result.status === "success") {
-                    showSuccess(name, payload.items, payload.total);
+                    showSuccess(name, itemDetails, totalAmount);
+                } else {
+                    throw new Error("Server Error");
                 }
-            } catch (e) { alert("เกิดข้อผิดพลาดในการส่งข้อมูล"); btn.disabled = false; btn.innerText = "ยืนยันการสั่งซื้อ"; }
+            } catch (e) { 
+                alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่"); 
+                btn.disabled = false; 
+                btn.innerText = "ยืนยันการสั่งซื้อ"; 
+            }
         }
 
         function showSuccess(name, items, total) {
             document.getElementById('app-container').innerHTML = `
                 <div class="p-8 text-center space-y-6">
-                    <div class="text-6xl">🎉</div>
+                    <div class="text-6xl animate-bounce">✅</div>
                     <h2 class="text-2xl font-bold text-indigo-700">สั่งซื้อสำเร็จ!</h2>
                     <p class="text-gray-600 text-sm">คุณ <b>${name}</b> แอดมินได้รับข้อมูลแล้ว<br>จะรีบดำเนินการให้ทันทีครับ</p>
                     
-                    <div class="bg-slate-50 p-4 rounded-3xl text-left text-xs space-y-2 border">
-                        <p class="font-bold border-b pb-1 text-gray-400">สรุปรายการสั่งซื้อ</p>
-                        <div style="white-space: pre-line;">${items}</div>
-                        <p class="border-t pt-2 font-bold text-indigo-700 text-lg">ยอดรวม: ${total}</p>
+                    <div class="bg-slate-50 p-5 rounded-3xl text-left text-xs space-y-3 border border-dashed border-indigo-200">
+                        <p class="font-bold border-b pb-1 text-indigo-400">สรุปรายการสั่งซื้อ</p>
+                        <div style="white-space: pre-line;" class="text-gray-700 font-medium">${items}</div>
+                        <div class="border-t pt-2 flex justify-between items-center font-bold text-indigo-700 text-lg">
+                            <span>ยอดรวมสุทธิ:</span>
+                            <span>${total}</span>
+                        </div>
                     </div>
 
-                    <button onclick="location.reload()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg">กลับไปหน้าแรก</button>
-                    <p class="text-[10px] text-gray-400">Kengpai Shop V2</p>
+                    <button onclick="location.reload()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-indigo-700 transition">กลับไปหน้าแรก</button>
+                    <p class="text-[10px] text-gray-400">Kengpai Shop V2 • ขอบคุณที่ใช้บริการ</p>
                 </div>
             `;
             window.scrollTo(0,0);
         }
 
+        // Initial render
         renderOptions();
     </script>
 </body>
